@@ -15,11 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+* Changed `Data.__dtype__` to delegate to `Data.__clstype__` (removes duplicated dtype format logic).
+* Changed `pca_numpy` to run the SVD on the centered data matrix instead of the covariance matrix: forming the covariance squares the condition number, so near-degenerate inputs (e.g. almost collinear point clouds) returned wrong principal directions — `bestfit_plane_numpy` normals were off by 11–37 degrees on exactly planar sliver clouds (#1522). Well-conditioned results are unchanged (same eigenvectors; eigenvalues rescaled to keep their variance meaning).
 * Changed `Tolerance` class to no longer use singleton pattern. `Tolerance()` now creates independent instances instead of returning the global `TOL`. 
 * Renamed `Tolerance.units` to `Tolerance.unit` to better reflect the documented properties. Left `units` with deprecation warning.
 * Fixed `NotImplementedErorr` when calling `BrepLoop.vertices`.
 * Fixed `python -m compas` to detect extensions based on `importlib` rather than `pkg_resources`.
 * Fixed `Polyhedron.vertices` setter to convert `Point` instances to `[x, y, z]` lists.
+* `compas_rhino.uninstall` will try to remove compas packages from all possible install locations.
+* Changed `angle_vectors_projected` to raise `ValueError` when an input vector is parallel to projection normal.
+* Changed `angle_vectors` to raise `ValueError` when one of the input vectors is a zero-length vector instead of returning 0.
 
 ### Removed
 
@@ -160,6 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed a bug when printing an empty `Tree`.
 * Fixed a bug in `Group` for IronPython where the decoding declaration was missing.
 * Fixed a bug where a `Group` without name could not be added to the scene.
+* Fixed a bug where `angle_vectors_projected` returned a 0 when an input vector was parallel to projection normal. Now returns `None`.
 
 ### Removed
 
